@@ -1,11 +1,23 @@
+# High-Utility Itemset Mining
 Implements high-utility itemset mining algorithms.
 
-Currently implemented algorithms:
+## Currently implemented algorithms:
 - Two-Phase  
   Liu Y., Liao W., Choudhary A. (2005) A Two-Phase Algorithm for Fast Discovery of High Utility Itemsets. In: Ho T.B., Cheung D., Liu H. (eds) Advances in Knowledge Discovery and Data Mining. PAKDD 2005. Lecture Notes in Computer Science, vol 3518. Springer, Berlin, Heidelberg  
   Link: http://cucis.ece.northwestern.edu/publications/pdf/LiuLia05A.pdf
 
-Example:
+## Roadmap (high to low priority):
+- **Address low-correlation HUIs with one of bond, all-confidence, or affinity.** Itemsets that are high utility, but where the items aren't correlated can be misleading for making marketing decisions. E.g. if an itemset of a TV and a pen is a HUI, it's likely just because the TV is expensive, not because it's an interesting pattern.
+- **Add *average* utility measure support**, for easier, more intuitive minutil
+- **Support discount strategies** via a discount strategy table and upgraded external utilities table.
+- **Add top-k HUI support.**
+- **Support identifying periodic high utility itemsets.** This allows detection of purchase patterns among high-utility itemsets to allow cross-promotions to customers who buy sets of items periodically.
+- **Support items' on-shelf time.** Ignmoring on-shelf time will biat toward items that have more shelf time, since they have more chance to generate higher utility.
+- **Allow incremental transaction updates** without rerunning everything.
+- **Support concise HUI itemsets, specifically closed form.** This allows the algorithm to be more efficient, only showing longer itemsets, which may be the most interesting ones (correlation issues aside).
+
+
+### Example:
 
 ```python
     >>> from operator import attrgetter
