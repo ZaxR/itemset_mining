@@ -1,11 +1,15 @@
 # High-Utility Itemset Mining
 Implements high-utility itemset mining algorithms.
+  
+High-utility itemset mining (HUIM) generalizes the problem of frequent itemset mining (FIM) by considering item values and weights. A popular application of HUIM is to discover all sets of items purchased together by customers that yield a high profit for the retailer. In such a case, item values would show not just that a load of bread is in a basket, but how many there are; and weights would include the profit from a loaf of bread.
 
+More technically, HUIM requires transactions in the transactions "database" to have internal utilities (i.e. item values) associated with each item in each transaction and a "database" of external utilities for each item (i.e. weights). 
+  
 ## Currently implemented algorithms:
-- Two-Phase  
+- Two-Phase (with max length support)  
   Liu Y., Liao W., Choudhary A. (2005) A Two-Phase Algorithm for Fast Discovery of High Utility Itemsets. In: Ho T.B., Cheung D., Liu H. (eds) Advances in Knowledge Discovery and Data Mining. PAKDD 2005. Lecture Notes in Computer Science, vol 3518. Springer, Berlin, Heidelberg  
   Link: http://cucis.ece.northwestern.edu/publications/pdf/LiuLia05A.pdf
-
+  
 ## Roadmap (high to low priority):
 - **Address low-correlation HUIs with one of bond, all-confidence, or affinity.** Itemsets that are high utility, but where the items aren't correlated can be misleading for making marketing decisions. E.g. if an itemset of a TV and a pen is a HUI, it's likely just because the TV is expensive, not because it's an interesting pattern.
 - **Add *average* utility measure support**, for easier, more intuitive minutil
@@ -15,8 +19,7 @@ Implements high-utility itemset mining algorithms.
 - **Support items' on-shelf time.** Ignmoring on-shelf time will biat toward items that have more shelf time, since they have more chance to generate higher utility.
 - **Allow incremental transaction updates** without rerunning everything.
 - **Support concise HUI itemsets, specifically closed form.** This allows the algorithm to be more efficient, only showing longer itemsets, which may be the most interesting ones (correlation issues aside).
-
-
+  
 ### Example:
 
 ```python
