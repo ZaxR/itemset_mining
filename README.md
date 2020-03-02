@@ -25,6 +25,7 @@ More technically, HUIM requires transactions in the transactions "database" to h
 ```python
     >>> from operator import attrgetter
 
+
     >>> transactions = [
             [("Coke 12oz", 6), ("Chips", 2), ("Dip", 1)],
             [("Coke 12oz", 1)],
@@ -48,9 +49,8 @@ More technically, HUIM requires transactions in the transactions "database" to h
     >>> result = hui.get_hui()
     >>> # Default order of results is Alphabetically by length ascending for the itemset.
     >>> # However, it may be more desirable to rank based on utility descending, as below
-    >>> sorted(result, key=attrgetter('twu'), reverse=True)
-    [HUIRecord(items=frozenset({'Chips'}), twu=42.480000000000004),
-     HUIRecord(items=frozenset({'Coke 12oz'}), twu=34.8),
-     HUIRecord(items=frozenset({'Chips', 'Coke 12oz'}), twu=33.510000000000005)]
+    >>> sorted(result, key=attrgetter('itemset_utility'), reverse=True)
+    [HUIRecord(items=frozenset({'Chips', 'Coke 12oz'}), itemset_utility=30.02),
+     HUIRecord(items=frozenset({'Chips'}), itemset_utility=20.93)]
 
 ```

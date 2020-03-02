@@ -5,6 +5,10 @@ from typing import (Any, Dict, Generator, Iterable,
 
 
 HUIRecord = namedtuple(  # pylint: disable=C0103
+    'HUIRecord', ('items', 'itemset_utility'))
+
+
+CandidateHUIRecord = namedtuple(  # pylint: disable=C0103
     'HUIRecord', ('items', 'twu'))
 
 
@@ -12,6 +16,9 @@ class TwoPhase:
     """
 
     Example:
+        >>> from operator import attrgetter
+
+
         >>> transactions = [
                 [("Coke 12oz", 6), ("Chips", 2), ("Dip", 1)],
                 [("Coke 12oz", 1)],
@@ -33,10 +40,9 @@ class TwoPhase:
 
         >>> hui = TwoPhase(transactions, external_utilities, minutil)
         >>> result = hui.get_hui()
-        >>> print(list(result))
-        [HUIRecord(items=frozenset({'Coke 12oz'}), twu=34.8),
-         HUIRecord(items=frozenset({'Chips'}), twu=42.480000000000004),
-         HUIRecord(items=frozenset({'Coke 12oz', 'Chips'}), twu=33.510000000000005)]
+        >>> sorted(result, key=attrgetter('itemset_utility'), reverse=True)
+        [HUIRecord(items=frozenset({'Chips', 'Coke 12oz'}), itemset_utility=30.02),
+         HUIRecord(items=frozenset({'Chips'}), itemset_utility=20.93)]
 
     """
 
@@ -107,20 +113,46 @@ class TwoPhase:
         ]
         return next_candidates
 
-    def get_hui(self, max_length: Optional[int] = None) -> Generator[HUIRecord, None, None]:
-        """Returns a generator of support records with given transactions."""
+    def get_high_twu_itemsets(self, max_length: Optional[int] = None) -> Generator[CandidateHUIRecord, None, None]:
+        """Returns a generator of support records with given transactions.
+
+        This is "Phase 1."
+
+        """
         candidate_itemsets = self.initial_candidates()
         length = 1
         while candidate_itemsets:
             high_util_itemsets = set()
             for candidate_itemset in candidate_itemsets:
                 twu = self.calc_twu(candidate_itemset)
-                # print(f"itemset: {candidate_itemset}, twu: {twu}")
                 if twu < self.minutil:
                     continue
                 high_util_itemsets.add(candidate_itemset)
-                yield HUIRecord(candidate_itemset, twu)
+                yield CandidateHUIRecord(candidate_itemset, twu)
             length += 1
             if max_length and length > max_length:
                 break
             candidate_itemsets = self._create_next_candidates(high_util_itemsets, length)
+
+    def calc_itemset_utility(self, itemset: frozenset):
+        itemset_utility = []
+        for transaction in self.transactions:
+            transaction_itemset = [t[0] for t in transaction]
+            if all(item in transaction_itemset for item in itemset):
+                transaction_part = [tup for item in itemset for tup in transaction if tup[0] == item]
+                transaction_utility = self.calc_transaction_utility(transaction_part)
+                itemset_utility.append(transaction_utility)
+
+        return sum(itemset_utility)
+
+    def get_hui(self, max_length: Optional[int] = None) -> Generator[HUIRecord, None, None]:
+        # Phase I
+        high_twu_itemsets = self.get_high_twu_itemsets(max_length=max_length)
+        candidate_itemsets = [itemset.items for itemset in high_twu_itemsets]
+
+        # Phase II
+        for itemset in candidate_itemsets:
+            itemset_utility = self.calc_itemset_utility(itemset)
+            if itemset_utility < self.minutil:
+                continue
+            yield HUIRecord(itemset, itemset_utility)
