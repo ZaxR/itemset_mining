@@ -4,7 +4,7 @@
 """The setup script."""
 from setuptools import find_packages, setup
 
-from itemset_mining
+import itemset_mining
 
 
 with open('itemset_mining/VERSION') as version_file:
