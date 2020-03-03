@@ -48,6 +48,8 @@ class TwoPhase:
 
     def __init__(self, transactions: List[Tuple[Any, Union[int, float]]],
                  external_utilities: Dict, minutil: int):
+        # todo: ensure transaction items are agged up so they're unique?
+        # todo: sort transaction items lexographically?
         self.transactions = transactions
 
         # For items in transactions, but not in external_utilities,
@@ -72,17 +74,27 @@ class TwoPhase:
 
     def calc_twu(self, itemset: List[str]):
         """Calculated the transaction-weighted utilization for an itemset"""
-        transaction_utilities = []
+        twu = 0
         for transaction in self.transactions:
             transaction_itemset = [t[0] for t in transaction]
             if all(item in transaction_itemset for item in itemset):
-                transaction_utility = self.calc_transaction_utility(transaction)
-                transaction_utilities.append(transaction_utility)
-        return sum(transaction_utilities)
+                twu += self.calc_transaction_utility(transaction)
+
+        return twu
+
+    def calc_itemset_utility(self, itemset: Tuple):
+        itemset_utility = 0
+        for transaction in self.transactions:
+            transaction_itemset = [t[0] for t in transaction]
+            if all(item in transaction_itemset for item in itemset):
+                transaction_part = [tup for item in itemset for tup in transaction if tup[0] == item]
+                itemset_utility += self.calc_transaction_utility(transaction_part)
+
+        return itemset_utility
 
     def initial_candidates(self):
         """Returns the initial candidates."""
-        return [frozenset([item]) for item in self.items]
+        return [tuple([item]) for item in self.items]
 
     def _create_next_candidates(self, prev_candidates: Set, length: int):
         """ Returns the apriori candidates as a list.
@@ -92,24 +104,21 @@ class TwoPhase:
             length: The lengths of the next candidates.
 
         """
-        # Solve the items.
-        items = sorted(frozenset(chain.from_iterable(prev_candidates)))
+        items = sorted(chain.from_iterable(prev_candidates))
 
         # Create the temporary candidates. These will be filtered below.
-        tmp_next_candidates = (frozenset(itemset) for itemset in combinations(items, length))
+        tmp_next_candidates = (itemset for itemset in combinations(items, length))
 
         # Return all the candidates if the length of the next candidates is 2
         # because their subsets are the same as items.
         if length < 3:
-            return list(tmp_next_candidates)
+            return tmp_next_candidates
 
-        # Filter candidates that all of their subsets are
-        # in the previous candidates.
+        # Filter to candidates where all of their subsets are in the previous candidates.
         next_candidates = [
             candidate for candidate in tmp_next_candidates
-            if all(
-                frozenset(itemset) in prev_candidates
-                for itemset in combinations(candidate, length - 1))
+            if all(itemset in prev_candidates
+                   for itemset in combinations(candidate, length - 1))
         ]
         return next_candidates
 
@@ -134,17 +143,6 @@ class TwoPhase:
                 break
             candidate_itemsets = self._create_next_candidates(high_util_itemsets, length)
 
-    def calc_itemset_utility(self, itemset: frozenset):
-        itemset_utility = []
-        for transaction in self.transactions:
-            transaction_itemset = [t[0] for t in transaction]
-            if all(item in transaction_itemset for item in itemset):
-                transaction_part = [tup for item in itemset for tup in transaction if tup[0] == item]
-                transaction_utility = self.calc_transaction_utility(transaction_part)
-                itemset_utility.append(transaction_utility)
-
-        return sum(itemset_utility)
-
     def get_hui(self, max_length: Optional[int] = None) -> Generator[HUIRecord, None, None]:
         # Phase I
         high_twu_itemsets = self.get_high_twu_itemsets(max_length=max_length)
@@ -155,4 +153,4 @@ class TwoPhase:
             itemset_utility = self.calc_itemset_utility(itemset)
             if itemset_utility < self.minutil:
                 continue
-            yield HUIRecord(itemset, itemset_utility)
+            yield HUIRecord(frozenset(itemset), itemset_utility)
