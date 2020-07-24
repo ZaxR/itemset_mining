@@ -1,4 +1,15 @@
 # High-Utility Itemset Mining
+<a href="https://pypi.org/project/itemset-mining/"><img src="https://img.shields.io/pypi/dm/itemset-mining?style=for-the-badge" alt="downloads" /></a>  
+
+<a href="https://pypi.org/project/itemset-mining/"><img src="https://img.shields.io/pypi/v/itemset-mining?style=for-the-badge" alt="latest release" /></a>
+<a href="https://pypi.org/project/itemset-mining/"><img src="https://img.shields.io/pypi/pyversions/itemset-mining?style=for-the-badge" alt="supported python versions" /></a>
+<a href="https://pypi.org/project/itemset-mining/"><img src="https://img.shields.io/pypi/status/itemset-mining?style=for-the-badge" alt="package status" /></a>
+<a href="https://github.com/ZaxR/itemset-mining/blob/master/LICENSE"><img src="https://img.shields.io/pypi/l/itemset-mining?style=for-the-badge" alt="license" /></a>
+
+<a href="https://travis-ci.com/ZaxR/itemset_mining"><img src="https://img.shields.io/travis/com/ZaxR/itemset_mining?style=for-the-badge" alt="travis build status" /></a>
+<a href="https://itemset_mining.readthedocs.io/en/latest/"><img src="https://img.shields.io/readthedocs/itemset_mining/latest?style=for-the-badge" alt="docs build status" /></a>
+<a href="https://codecov.io/gh/ZaxR/itemset_mining"><img src="https://img.shields.io/codecov/c/github/zaxr/itemset_mining?style=for-the-badge" alt="coverage status" /></a>
+
 Implements high-utility itemset mining algorithms.
   
 High-utility itemset mining (HUIM) generalizes the problem of frequent itemset mining (FIM) by considering item values and weights. A popular application of HUIM is to discover all sets of items purchased together by customers that yield a high profit for the retailer. In such a case, item values would show not just that a load of bread is in a basket, but how many there are; and weights would include the profit from a loaf of bread.
