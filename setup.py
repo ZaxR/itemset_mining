@@ -16,7 +16,13 @@ with open("README.md") as readme_file:
 # Requirements placed here for convenient viewing
 install_requires = []
 tests_requires = ["pytest", "pytest-cov"]
-docs_requires = ["m2r", "setuptools>=30.4", "Sphinx", "sphinx_rtd_theme"]
+docs_requires = [
+    "m2r",
+    "setuptools>=30.4",
+    "Sphinx~=2.0",  # Use of v3.x.x requires m2r upgrade: https://github.com/miyakogi/m2r/pull/55
+    "sphinxcontrib-apidoc~=0.3.0",
+    "sphinx_rtd_theme"
+]
 dev_requires = tests_requires + docs_requires + ["pre-commit", "tox"]
 
 # Avoid setuptools as an entrypoint unless it's the only way to do it.
@@ -31,9 +37,9 @@ setup(
     url="https://github.com/zaxr/itemset_mining",
     author=itemset_mining.__author__,
     author_email=itemset_mining.__email__,
-    classifiers=["Development Status :: 4 - Beta",
+    classifiers=["Development Status :: 3 - Alpha",
                  "Intended Audience :: Developers",
-                 "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+                 "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
                  "Natural Language :: English",
                  "Programming Language :: Python :: 3",
                  "Programming Language :: Python :: 3.6",

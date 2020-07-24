@@ -7,7 +7,7 @@ More technically, HUIM requires transactions in the transactions "database" to h
   
 ## Currently implemented algorithms:
 - Two-Phase (with max length support)  
-  Liu Y., Liao W., Choudhary A. (2005) A Two-Phase Algorithm for Fast Discovery of High Utility Itemsets. In: Ho T.B., Cheung D., Liu H. (eds) Advances in Knowledge Discovery and Data Mining. PAKDD 2005. Lecture Notes in Computer Science, vol 3518. Springer, Berlin, Heidelberg  
+  Liu Y., Liao W., Choudhary A. (2005) A Two-Phase Algorithm for Fast Discovery of High Utility Itemsets. In: Ho T.B., Cheung D., Liu H. (eds) Advances in Knowledge Discovery and Data Mining. PAKDD 2005. Lecture Notes in Computer Science, vol 3518. Springer, Berlin, Heidelberg
   Link: http://cucis.ece.northwestern.edu/publications/pdf/LiuLia05A.pdf
   
 ## Roadmap (high to low priority):
@@ -20,9 +20,15 @@ More technically, HUIM requires transactions in the transactions "database" to h
 - **Allow incremental transaction updates** without rerunning everything.
 - **Support concise HUI itemsets, specifically closed form.** This allows the algorithm to be more efficient, only showing longer itemsets, which may be the most interesting ones (correlation issues aside).
   
+### Installation:
+```bash
+pip install itemset-mining
+```
+  
 ### Example:
 
 ```python
+    >>> from itemset_mining.two_phase_huim import TwoPhase
     >>> from operator import attrgetter
 
 
@@ -50,7 +56,7 @@ More technically, HUIM requires transactions in the transactions "database" to h
     >>> # Default order of results is Alphabetically by length ascending for the itemset.
     >>> # However, it may be more desirable to rank based on utility descending, as below
     >>> sorted(result, key=attrgetter('itemset_utility'), reverse=True)
-    [HUIRecord(items=frozenset({'Chips', 'Coke 12oz'}), itemset_utility=30.02),
+    [HUIRecord(items=frozenset({'Coke 12oz', 'Chips'}), itemset_utility=30.02),
      HUIRecord(items=frozenset({'Chips'}), itemset_utility=20.93)]
 
 ```
