@@ -16,6 +16,7 @@ class TwoPhase:
     """
 
     Example:
+        >>> from itemset_mining.two_phase_huim import TwoPhase
         >>> from operator import attrgetter
 
 
