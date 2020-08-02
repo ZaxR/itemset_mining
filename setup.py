@@ -6,7 +6,6 @@ from setuptools import find_packages, setup
 
 import itemset_mining
 
-
 with open('itemset_mining/VERSION') as version_file:
     version = version_file.read().strip()
 
@@ -15,7 +14,7 @@ with open("README.md") as readme_file:
 
 # Requirements placed here for convenient viewing
 install_requires = []
-tests_requires = ["pytest", "pytest-cov"]
+tests_requires = ["pytest", "pytest-cases", "pytest-cov"]
 docs_requires = [
     "m2r",
     "setuptools>=30.4",
