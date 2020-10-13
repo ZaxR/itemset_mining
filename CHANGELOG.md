@@ -1,6 +1,10 @@
 Changelog
 ==========
 
+<h2>[0.2.1] - 2020-10-13</h2>
+**Changed**
+- Hotfix missing VERSION file preventing library import
+
 <h2>[0.2.0] - 2020-08-02</h2>
 **Added**
 - Support for generator transaction inputs to Two-Phase HUIM algorithm

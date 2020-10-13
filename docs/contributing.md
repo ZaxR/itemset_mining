@@ -148,7 +148,7 @@ with a few additional steps before releasing a new version:
     # Build/Upload dist and install library
     python3 setup.py sdist bdist_wheel
     python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-    pip install itemset-mining --index-url https://test.pypi.org/simple/itemset_mining
+    pip install itemset-mining --index-url https://test.pypi.org/simple/
     ```
 
 - Releases are indicated using git tags.
