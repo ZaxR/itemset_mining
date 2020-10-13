@@ -48,6 +48,7 @@ setup(
     packages=find_packages(exclude=["docs", "tests"]),
     python_requires=">=3.6",
     install_requires=install_requires,
+    include_package_data=True,
     extras_require={'docs': docs_requires,
                     'test': tests_requires,
                     'dev': dev_requires}
