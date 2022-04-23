@@ -48,7 +48,6 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
     ],
     keywords="high utility itemset mining data pattern huim apriori frequent",
     packages=find_packages(exclude=["docs", "tests"]),
