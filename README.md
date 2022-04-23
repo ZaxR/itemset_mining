@@ -51,7 +51,7 @@ pip install itemset-mining
     >>> transactions = [
     ...     [("Coke 12oz", 6), ("Chips", 2), ("Dip", 1)],
     ...     [("Coke 12oz", 1)],
-    ...     [("Coke 12oz", 2), ("Chips", 1), ("Filet Mignon 1lb", 1],
+    ...     [("Coke 12oz", 2), ("Chips", 1), ("Filet Mignon 1lb", 1)],
     ...     [("Chips", 1)],
     ...     [("Chips", 2)],
     ...     [("Coke 12oz", 6), ("Chips", 1)]
