@@ -6,11 +6,11 @@ from typing import Any, Dict, Generator, List, Optional, Set, Tuple, Union
 TupleOfStrAndNum = Tuple[str, Union[int, float]]
 
 HUIRecord = namedtuple(  # pylint: disable=C0103
-    'HUIRecord', ('items', 'itemset_utility'))
+    "HUIRecord", ("items", "itemset_utility")
+)
 
 
-CandidateHUIRecord = namedtuple(  # pylint: disable=C0103
-    'HUIRecord', ('items', 'twu'))
+CandidateHUIRecord = namedtuple("HUIRecord", ("items", "twu"))  # pylint: disable=C0103
 
 
 class TwoPhase:
@@ -45,10 +45,14 @@ class TwoPhase:
 
     """
 
-    def __init__(self,
-                 transactions: Union[Generator[TupleOfStrAndNum, None, None],
-                                     List[TupleOfStrAndNum]],
-                 external_utilities: Dict, minutil: int):
+    def __init__(
+        self,
+        transactions: Union[
+            Generator[TupleOfStrAndNum, None, None], List[TupleOfStrAndNum]
+        ],
+        external_utilities: Dict,
+        minutil: int,
+    ):
         # todo: sort transaction items lexographically?
         self.transactions_type = type(transactions).__name__  # "generator" or "list"
         self.transactions = self.ensure_transaction_items_unique(transactions)
@@ -71,9 +75,11 @@ class TwoPhase:
             t_list = list(transaction)
             item_names = [item[0] for item in t_list]
             if len(item_names) != len(set(item_names)):
-                raise ValueError(f"There are duplicate items in transaction index {idx}. "
-                                 f"Transactions must have a unique list of items, "
-                                 f"with their internal utilities aggregated togther.")
+                raise ValueError(
+                    f"There are duplicate items in transaction index {idx}. "
+                    f"Transactions must have a unique list of items, "
+                    f"with their internal utilities aggregated togther."
+                )
             yield transaction
 
     @staticmethod
@@ -81,14 +87,16 @@ class TwoPhase:
         for idx, transaction in enumerate(transactions):
             item_names = [item[0] for item in transaction]
             if len(item_names) != len(set(item_names)):
-                raise ValueError(f"There are duplicate items in transaction index {idx}. "
-                                 f"Transactions must have a unique list of items, "
-                                 f"with their internal utilities aggregated togther.")
+                raise ValueError(
+                    f"There are duplicate items in transaction index {idx}. "
+                    f"Transactions must have a unique list of items, "
+                    f"with their internal utilities aggregated togther."
+                )
         return transactions
 
     @classmethod
     def ensure_transaction_items_unique(cls, transactions):
-        """ Ensure there are no duplicate items within a transaction,
+        """Ensure there are no duplicate items within a transaction,
 
         while preserving generators.
         """
@@ -104,14 +112,18 @@ class TwoPhase:
         return sorted(self._items)
 
     def calc_transaction_utility(self, transaction: Tuple[Any, Union[int, float]]):
-        return sum([self.external_utilities[item] * internal_utility
-                    for item, internal_utility in transaction])
+        return sum(
+            [
+                self.external_utilities[item] * internal_utility
+                for item, internal_utility in transaction
+            ]
+        )
 
     def calc_twu(self, itemset: List[str]):
         """Calculated the transaction-weighted utilization for an itemset"""
         twu = 0
 
-        if self.transactions_type == 'generator':
+        if self.transactions_type == "generator":
             self.transactions, transactions = tee(self.transactions)
         else:
             transactions = self.transactions
@@ -126,7 +138,7 @@ class TwoPhase:
     def calc_itemset_utility(self, itemset: Tuple):
         itemset_utility = 0
 
-        if self.transactions_type == 'generator':
+        if self.transactions_type == "generator":
             self.transactions, transactions = tee(self.transactions)
         else:
             transactions = self.transactions
@@ -135,7 +147,8 @@ class TwoPhase:
             transaction_itemset = [i[0] for i in transaction]
             if all(item in transaction_itemset for item in itemset):
                 transaction_part = [
-                    tup for item in itemset for tup in transaction if tup[0] == item]
+                    tup for item in itemset for tup in transaction if tup[0] == item
+                ]
                 itemset_utility += self.calc_transaction_utility(transaction_part)
 
         return itemset_utility
@@ -144,15 +157,16 @@ class TwoPhase:
         """Returns the initial candidates."""
         return [tuple([item]) for item in self.items]
 
-    def _create_next_candidates(self, prev_candidates: Set, length: int):
-        """ Returns the apriori candidates as a list.
+    @staticmethod
+    def _create_next_candidates(prev_candidates: Set, length: int):
+        """Returns the apriori candidates as a list.
 
         Args:
             prev_candidates: Previous candidates as a list.
             length: The lengths of the next candidates.
 
         """
-        items = sorted(chain.from_iterable(prev_candidates))
+        items = sorted(set(chain.from_iterable(prev_candidates)))
 
         # Create the temporary candidates. These will be filtered below.
         tmp_next_candidates = (itemset for itemset in combinations(items, length))
@@ -164,15 +178,18 @@ class TwoPhase:
 
         # Filter to candidates where all of their subsets are in the previous candidates.
         next_candidates = [
-            candidate for candidate in tmp_next_candidates
-            if all(itemset in prev_candidates
-                   for itemset in combinations(candidate, length - 1))
+            candidate
+            for candidate in tmp_next_candidates
+            if all(
+                itemset in prev_candidates
+                for itemset in combinations(candidate, length - 1)
+            )
         ]
         return next_candidates
 
-    def get_high_twu_itemsets(self,
-                              max_length: Optional[int] = None
-                              ) -> Generator[CandidateHUIRecord, None, None]:
+    def get_high_twu_itemsets(
+        self, max_length: Optional[int] = None
+    ) -> Generator[CandidateHUIRecord, None, None]:
         """Returns a generator of support records with given transactions.
 
         This is "Phase 1."
@@ -191,9 +208,13 @@ class TwoPhase:
             length += 1
             if max_length and length > max_length:
                 break
-            candidate_itemsets = self._create_next_candidates(high_util_itemsets, length)
+            candidate_itemsets = self._create_next_candidates(
+                high_util_itemsets, length
+            )
 
-    def get_hui(self, max_length: Optional[int] = None) -> Generator[HUIRecord, None, None]:
+    def get_hui(
+        self, max_length: Optional[int] = None
+    ) -> Generator[HUIRecord, None, None]:
         # Phase I
         high_twu_itemsets = self.get_high_twu_itemsets(max_length=max_length)
         candidate_itemsets = (itemset.items for itemset in high_twu_itemsets)

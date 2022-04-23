@@ -1,6 +1,10 @@
 Changelog
 ==========
 
+<h2>[0.2.2] - 2022-04-23</h2>
+**Changed**
+- Deduplicate `HUIRecord`s in results when itemset length >= 3
+
 <h2>[0.2.1] - 2020-10-13</h2>
 **Changed**
 - Hotfix missing VERSION file preventing library import
