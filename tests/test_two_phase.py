@@ -1,7 +1,7 @@
 from operator import attrgetter
 
 import pytest
-from pytest_cases import fixture_ref, parametrize_plus
+from pytest_cases import fixture_ref, parametrize
 
 from itemset_mining.two_phase_huim import HUIRecord, TwoPhase
 
@@ -18,7 +18,7 @@ def transactions_list():
     ]
 
 
-@pytest.yield_fixture(scope="module")
+@pytest.fixture
 def transactions_generator(transactions_list):
     return (t for t in transactions_list)
 
@@ -33,7 +33,7 @@ def external_utilities():
     }
 
 
-@parametrize_plus(
+@parametrize(
     "transactions, ext_utilities",
     [
         (fixture_ref(transactions_list), fixture_ref(external_utilities)),

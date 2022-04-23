@@ -2,26 +2,21 @@ repos:
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v1.4.4
     hooks:
-    -   id: autopep8
+      - id: autopep8
         exclude: >
-            (?x)^(
-                .git|
-                __pycache__|
-                docs/conf.py|
-                build|
-                dist
-            )$
+          (?x)^(
+              .git|
+              __pycache__|
+              docs/conf.py|
+              build|
+              dist
+          )$
 
-  - repo: https://github.com/asottile/seed-isort-config
-    rev: v1.9.1
-    hooks:
-      - id: seed-isort-config
-
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v4.3.1  # newer versions fail to honor skip=
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
     hooks:
       - id: isort
-        args: [--settings-path, .isort.cfg]
+        name: isort (python)
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.2.3

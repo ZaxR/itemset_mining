@@ -16,6 +16,8 @@ with open("README.md") as readme_file:
 install_requires = []
 tests_requires = ["pytest", "pytest-cases", "pytest-cov"]
 docs_requires = [
+    "Jinja2<3.1",
+    "mistune~=0.8.4",  # required for m2r
     "m2r",
     "setuptools>=30.4",
     "Sphinx~=2.0",  # Use of v3.x.x requires m2r upgrade: https://github.com/miyakogi/m2r/pull/55
